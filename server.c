@@ -50,11 +50,19 @@ int main() {
     int connfd = accept(socketfd, (SA*)&client_address, &client_addr_size);
 
     char buffer[1024];
-    recv(connfd, buffer, 1024, 0);
 
-    printf("%s\n\r", buffer);
+    while(1){
+        ssize_t amount_received = recv(connfd, buffer, 1024, 0);
+	if (amount_received > 0){
+	    buffer[amount_received] = 0;
+	    printf("%s\n\r", buffer);
+	}
+	else if (amount_received == 0)
+	    break;
+    }
+
     close(connfd);
-    close(socketfd);
+    shutdown(socketfd, SHUT_RDWR);
     return 0;
 }
 
