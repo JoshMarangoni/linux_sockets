@@ -20,7 +20,7 @@ int main() {
 
     // set up hostname
     const char* hostname = "google.com";
-    int port = 80;
+    int port = 80; // default HTTP port
     struct hostent *host = gethostbyname(hostname);
     if (host == NULL) {
         perror("gethostbyname");
