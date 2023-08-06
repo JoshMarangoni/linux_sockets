@@ -4,7 +4,7 @@
 #include <unistd.h>      // for close
 #include <string.h>      // for string manipulation
 
-#define SERVER_PORT 2000
+#define SERVER_PORT 2002
 
 // connect, bind, and accept except pointers to
 // a generic socket address (protocol independent).
@@ -36,6 +36,14 @@ int main() {
 	return 1;
     }
 
+    char* message;
+    message = "hello world\r\n";
+    send(socketfd, message, strlen(message), 0);
+
+    printf("message sent");
+
+    char buffer[1024];
+    recv(socketfd, buffer, 1024, 0);
 
     close(socketfd);
     return 0;
