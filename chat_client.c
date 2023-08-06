@@ -36,14 +36,20 @@ int main() {
 	return 1;
     }
 
-    char* message;
-    message = "hello world\r\n";
-    send(socketfd, message, strlen(message), 0);
+    char *line = NULL;
+    size_t line_len = 0;
 
-    printf("message sent");
+    printf("type and we will send. type exit to quit...\n\r");
 
-    char buffer[1024];
-    recv(socketfd, buffer, 1024, 0);
+    while(1){
+        ssize_t char_count = getline(&line, &line_len, stdin);
+
+	if (char_count > 0){
+	    if (strcmp(line, "exit\n")==0)
+		break;
+	    ssize_t amount_sent = send(socketfd, line, char_count,0);
+	}
+    }
 
     close(socketfd);
     return 0;
