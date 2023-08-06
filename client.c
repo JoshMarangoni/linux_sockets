@@ -4,9 +4,10 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <unistd.h>
+#include <string.h>
 
 int main() {
-    // create socket file descriptor on local host
+    // create a TCP socket file descriptor on localhost
     int socketfd = socket(AF_INET, SOCK_STREAM, 0);
     if (socketfd < 0) {
         perror("socket error");
@@ -27,7 +28,6 @@ int main() {
     address.sin_family = AF_INET;
     address.sin_port = htons(port);
     address.sin_addr.s_addr = *(in_addr_t*)host->h_addr;
-//     inet_pton(AF_INET, host->h_addr, &address.sin_addr.s_addr);
 
     int result = connect(socketfd, (struct sockaddr*)&address, sizeof address);
     if (result < 0) {
@@ -38,11 +38,18 @@ int main() {
 
     printf("conneted to %s:%d\n\r", hostname, port);
 
-    close(socketfd);
+    // send an HTTP GET request to server
+    char* msg;
+    msg ="GET \\ HTTP/1.1\r\nHost:google.com\r\n\r\n";
+    send(socketfd, msg, strlen(msg), 0);
 
-    if (result ==0) {
-	printf("connection was successful");
-    }
+    // receive response from server
+    char buffer[1024];
+    recv(socketfd, buffer, 1024, 0);
+
+    printf("Response was: %s\r\n", buffer);
+
+    close(socketfd);
 
     return 0;
 }
